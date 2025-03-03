@@ -1,34 +1,41 @@
 aid: humana
-name: Humana
-description: >-
-  The AllergyIntolerance API enables Humana members to exchange their allergy
-  and adverse reaction data with third party applications. This API conforms to
-  the R4 FHIR standard and the US Core STU3 Implementation Guide. 
-type: Index
-position: Consumer
-access: 3rd-Party
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
-tags:
-  - API
-created: '2025-01-07'
-modified: '2025-01-07'
 url: >-
   https://raw.githubusercontent.com/api-evangelist/humana/refs/heads/main/apis.yml
-specificationVersion: '0.19'
 apis:
   - aid: humana:humana
-    name: Humana
+    name: Humana API
+    tags:
+      - API
+    humanURL: ' https://developers.humana.com/apis/allergyintolerance-api/doc'
+    properties:
+      - url: ' https://developers.humana.com/apis/allergyintolerance-api/doc'
+        type: Documentation
     description: >-
       The AllergyIntolerance API enables Humana members to exchange their
       allergy and adverse reaction data with third party applications. This API
       conforms to the R4 FHIR standard and the US Core STU3 Implementation
       Guide. 
-    humanURL: ' https://developers.humana.com/apis/allergyintolerance-api/doc'
-    tags:
-      - API
-    properties:
-      - type: Documentation
-        url: ' https://developers.humana.com/apis/allergyintolerance-api/doc'
+name: Humana
+tags:
+  - Healthcare
+  - FHIR
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+access: 3rd-Party
+created: '2025-01-07'
+modified: '2025-03-02'
+position: Consumer
+description: >-
+  Humana is a health insurance company that provides a variety of healthcare
+  services to its members. They offer a range of insurance plans, including
+  Medicare and Medicaid, as well as employer-sponsored plans. In addition to
+  insurance coverage, Humana also offers wellness programs and resources to help
+  members live healthier lives. They work with healthcare providers to ensure
+  that their members receive high-quality care and have access to a wide network
+  of doctors and hospitals. Overall, Humana is dedicated to helping people
+  achieve their best health and well-being through comprehensive insurance
+  coverage and supportive services.
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com
+specificationVersion: '0.19'
