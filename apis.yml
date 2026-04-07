@@ -10,9 +10,9 @@ url: >-
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Healthcare
   - FHIR
   - Health Insurance
+  - Healthcare
   - Medicare
 created: '2025-01-07'
 modified: '2026-03-16'
@@ -27,9 +27,9 @@ apis:
     humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
     baseURL: https://api.humana.com/fhir
     tags:
-      - Healthcare
       - FHIR
       - Health Data
+      - Healthcare
     properties:
       - type: Documentation
         url: https://developers.humana.com/apis/allergyintolerance-api/doc
