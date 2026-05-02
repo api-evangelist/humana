@@ -1,0 +1,111 @@
+aid: humana
+name: Humana Rules
+description: >-
+  Operational rules and guardrails for working with Humana's FHIR-compliant
+  APIs. Codifies HIPAA handling, OAuth2 authentication, FHIR conformance,
+  and read-only scope of patient access endpoints for agents and
+  integrations.
+modified: '2026-04-28'
+rules:
+  - id: humana-fhir-conformance
+    name: FHIR R4 Conformance
+    description: >-
+      All Humana clinical, medication, coverage, and directory APIs follow
+      the HL7 FHIR R4 standard. Always discover supported resources and
+      search parameters from the CapabilityStatement (`/metadata`) before
+      issuing queries.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+      - humana:humana-fhir-provider-directory-api
+    severity: required
+  - id: humana-oauth2-smart
+    name: OAuth2 / SMART on FHIR Authentication
+    description: >-
+      Patient Access endpoints require SMART on FHIR OAuth2 authorization.
+      Apps must register on the Humana developer portal, request only the
+      scopes they need (e.g., `patient/*.read`), and never embed client
+      secrets in source control or distributed mobile/web bundles.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+      - humana:humana-fhir-provider-directory-api
+    severity: required
+  - id: humana-phi-handling
+    name: Protected Health Information Handling
+    description: >-
+      Responses contain Protected Health Information (PHI) under HIPAA.
+      Logs, transcripts, and analytics must redact PHI; data must not be
+      forwarded to third-party LLMs or storage without a Business
+      Associate Agreement (BAA) and explicit user authorization.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+    severity: required
+  - id: humana-read-only-scope
+    name: Read-Only Patient Access
+    description: >-
+      The Humana Patient Access FHIR APIs are read-only. Agents must not
+      attempt POST, PUT, PATCH, or DELETE operations against these
+      endpoints; write attempts will be rejected and may be flagged as
+      abuse.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+      - humana:humana-fhir-provider-directory-api
+    severity: required
+  - id: humana-sandbox-first
+    name: Sandbox Before Production
+    description: >-
+      New integrations must be built and tested against the Humana sandbox
+      FHIR endpoint (`https://sandbox-fhir.humana.com/api/`) before
+      requesting production access.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+      - humana:humana-fhir-provider-directory-api
+    severity: recommended
+  - id: humana-pagination-bundles
+    name: FHIR Bundle Pagination
+    description: >-
+      List queries return FHIR `Bundle` resources with `link` entries for
+      `next` and `previous`. Always follow the bundle pagination links
+      rather than constructing offset URLs manually.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+      - humana:humana-fhir-provider-directory-api
+    severity: required
+  - id: humana-rate-limits
+    name: Respect Rate Limits
+    description: >-
+      Honor HTTP 429 and 503 responses with exponential backoff and
+      jitter. Avoid retry storms, especially for member-scoped clinical
+      queries.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+      - humana:humana-fhir-provider-directory-api
+    severity: required
+  - id: humana-consent-revocation
+    name: Honor Consent Revocation
+    description: >-
+      Member authorization can be revoked at any time via the Humana
+      member portal. Apps must detect 401/403 responses, stop polling,
+      delete cached PHI for the affected member, and surface the consent
+      change to the user.
+    applies_to:
+      - humana:humana-fhir-clinical-api
+      - humana:humana-fhir-medication-api
+      - humana:humana-fhir-coverage-api
+    severity: required
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
