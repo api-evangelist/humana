@@ -4,101 +4,59 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Humana
 providerId: humana
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: false
 tags:
-  - FHIR
-  - Health Insurance
-  - Healthcare
-  - Interoperability
-  - Medicare
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Humana API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  - FHIR
+  - Healthcare
+  - CMS
+description: Humana's developer portal does not publish numeric rate limits for its FHIR APIs. Limits
+  are administered behind the scenes consistent with CMS Patient Access expectations and reasonable-use
+  protections, scoped per registered application and per member token. Production apps that exceed
+  fair-use thresholds are contacted directly. Sandbox endpoints are bound by similar reasonable-use
+  ceilings without published numbers.
+notes: Specific per-second / per-minute numbers are not publicly disclosed. The developer portal
+  is scheduled to be retired; successor portal may publish updated limits.
+sources:
+  - https://developers.humana.com/
+  - https://fhir.humana.com/api/metadata
+  - https://www.cms.gov/regulations-and-guidance/guidance/interoperability/index
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Humana FHIR Clinical Data API
-      - Humana FHIR Medication API
-      - Humana FHIR Coverage and Benefits API
-      - Humana FHIR Provider Directory API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Humana FHIR Clinical Data API
-      - Humana FHIR Medication API
-      - Humana FHIR Coverage and Benefits API
-      - Humana FHIR Provider Directory API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Humana FHIR Clinical Data API
-      - Humana FHIR Medication API
-      - Humana FHIR Coverage and Benefits API
-      - Humana FHIR Provider Directory API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Humana FHIR Clinical Data API
-      - Humana FHIR Medication API
-      - Humana FHIR Coverage and Benefits API
-      - Humana FHIR Provider Directory API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Humana FHIR Clinical Data API
-      - Humana FHIR Medication API
-      - Humana FHIR Coverage and Benefits API
-      - Humana FHIR Provider Directory API
+  - name: Patient Access FHIR requests (production)
+    scope: app + member_token
+    metric: requests_per_second
+    limit: not publicly published; reasonable-use enforcement
+    notes: Member-authorized FHIR queries; throttled to protect platform but no public RPS number.
+  - name: Provider Directory FHIR requests
+    scope: app
+    metric: requests_per_second
+    limit: not publicly published; reasonable-use enforcement
+  - name: Drug Formulary FHIR requests
+    scope: app
+    metric: requests_per_second
+    limit: not publicly published; reasonable-use enforcement
+  - name: Sandbox FHIR requests
+    scope: ip
+    metric: requests_per_second
+    limit: not publicly published; reasonable-use enforcement
+    notes: Sandbox uses synthetic data; no member PHI risk but limits still apply.
 policies:
+  - name: SMART on FHIR Authorization
+    description: Production member data access requires SMART on FHIR / OAuth 2.0 with explicit member
+      consent. Tokens are short-lived and refresh tokens are subject to revocation.
+  - name: Application Attestation
+    description: Developer apps must attest to CMS privacy / data use practices before production
+      access is granted.
   - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+    description: Implement exponential backoff and honor any Retry-After response header; pace requests
+      conservatively given the absence of published numeric limits.
+  - name: Sandbox vs Production
+    description: Test against the sandbox at sandbox-fhir.humana.com before promoting to fhir.humana.com.
+      Production apps require completed registration.
+  - name: Portal Migration
+    description: The developers.humana.com portal will be retired; FHIR products and consuming apps
+      will migrate to a successor portal. Watch for migration guidance.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
