@@ -1,0 +1,277 @@
+openapi: 3.1.0
+info:
+  title: Humana FHIR API
+  description: >-
+    Minimal OpenAPI description for Humana's FHIR R4 / US Core STU3 patient
+    access APIs covering common clinical, medication, and coverage resources.
+    Each endpoint returns a FHIR Bundle (searchset) of the named resource type.
+    Generated from public documentation; verify before production use.
+  version: "R4"
+  contact:
+    name: Humana Developer Portal
+    url: https://developers.humana.com/
+  x-generated-from: https://developers.humana.com/apis/allergyintolerance-api/doc
+  x-generated-by: claude-crawl-2026-05-08
+servers:
+  - url: https://fhir.humana.com/api
+    description: Humana FHIR production
+  - url: https://sandbox-fhir.humana.com/api
+    description: Humana FHIR sandbox
+security:
+  - bearerAuth: []
+tags:
+  - name: Clinical
+    description: Clinical FHIR resources
+  - name: Medications
+    description: Medication FHIR resources
+  - name: Coverage
+    description: Coverage and insurance FHIR resources
+  - name: Demographic
+    description: Patient and provider demographic FHIR resources
+paths:
+  /AllergyIntolerance:
+    get:
+      operationId: searchAllergyIntolerance
+      summary: Search AllergyIntolerance
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /CarePlan:
+    get:
+      operationId: searchCarePlan
+      summary: Search CarePlan
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /CareTeam:
+    get:
+      operationId: searchCareTeam
+      summary: Search CareTeam
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Condition:
+    get:
+      operationId: searchCondition
+      summary: Search Condition
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Coverage:
+    get:
+      operationId: searchCoverage
+      summary: Search Coverage
+      tags:
+        - Coverage
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Goal:
+    get:
+      operationId: searchGoal
+      summary: Search Goal
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Immunization:
+    get:
+      operationId: searchImmunization
+      summary: Search Immunization
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /MedicationRequest:
+    get:
+      operationId: searchMedicationRequest
+      summary: Search MedicationRequest
+      tags:
+        - Medications
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Observation:
+    get:
+      operationId: searchObservation
+      summary: Search Observation
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Patient/{id}:
+    get:
+      operationId: getPatient
+      summary: Get Patient
+      tags:
+        - Demographic
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Patient resource
+          content:
+            application/json:
+              schema:
+                type: object
+  /Practitioner:
+    get:
+      operationId: searchPractitioner
+      summary: Search Practitioner
+      tags:
+        - Demographic
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+  /Procedure:
+    get:
+      operationId: searchProcedure
+      summary: Search Procedure
+      tags:
+        - Clinical
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FHIR Bundle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Bundle:
+      type: object
+      properties:
+        resourceType:
+          type: string
+          const: Bundle
+        type:
+          type: string
+        total:
+          type: integer
+        entry:
+          type: array
+          items:
+            type: object

@@ -42,6 +42,8 @@ apis:
         url: https://sandbox-fhir.humana.com/api/
       - type: Getting Started
         url: https://developers.humana.com/
+      - type: OpenAPI
+        url: openapi/humana-openapi.yml
   - aid: humana:humana-fhir-medication-api
     name: Humana FHIR Medication API
     description: >-
