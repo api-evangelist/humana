@@ -40,7 +40,7 @@ apis:
         url: https://fhir.humana.com/api/metadata
       - type: Sandbox
         url: https://sandbox-fhir.humana.com/api/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://developers.humana.com/
       - type: OpenAPI
         url: openapi/humana-openapi.yml
@@ -105,9 +105,9 @@ common:
     url: https://developers.humana.com/
   - type: Website
     url: https://www.humana.com/
-  - type: Privacy Policy
+  - type: PrivacyPolicy
     url: https://www.humana.com/legal/privacy-policy
-  - type: Terms of Service
+  - type: TermsOfService
     url: https://www.humana.com/legal/terms-conditions
   - type: Rules
     url: >-
