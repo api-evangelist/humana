@@ -1,0 +1,79 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Humana FHIR API — Coverage
+  description: 'Humana FHIR API — Coverage. 1 operations. Lead operation: Search Coverage. Self-contained Naftiko capability
+    covering one Humana business surface.'
+  tags:
+  - Humana
+  - Coverage
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    HUMANA_API_KEY: HUMANA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: humana-coverage
+    baseUri: https://fhir.humana.com/api
+    description: Humana FHIR API — Coverage business capability. Self-contained, no shared references.
+    resources:
+    - name: Coverage
+      path: /Coverage
+      operations:
+      - name: searchcoverage
+        method: GET
+        description: Search Coverage
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: patient
+          in: query
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.HUMANA_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: humana-coverage-rest
+    port: 8080
+    description: REST adapter for Humana FHIR API — Coverage. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/coverage
+      name: coverage
+      description: REST surface for Coverage.
+      operations:
+      - method: GET
+        name: searchcoverage
+        description: Search Coverage
+        call: humana-coverage.searchcoverage
+        with:
+          patient: rest.patient
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: humana-coverage-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Humana FHIR API — Coverage. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: search-coverage
+      description: Search Coverage
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: humana-coverage.searchcoverage
+      with:
+        patient: tools.patient
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,79 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Humana FHIR API — Medications
+  description: 'Humana FHIR API — Medications. 1 operations. Lead operation: Search MedicationRequest. Self-contained Naftiko
+    capability covering one Humana business surface.'
+  tags:
+  - Humana
+  - Medications
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    HUMANA_API_KEY: HUMANA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: humana-medications
+    baseUri: https://fhir.humana.com/api
+    description: Humana FHIR API — Medications business capability. Self-contained, no shared references.
+    resources:
+    - name: MedicationRequest
+      path: /MedicationRequest
+      operations:
+      - name: searchmedicationrequest
+        method: GET
+        description: Search MedicationRequest
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: patient
+          in: query
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.HUMANA_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: humana-medications-rest
+    port: 8080
+    description: REST adapter for Humana FHIR API — Medications. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/medicationrequest
+      name: medicationrequest
+      description: REST surface for MedicationRequest.
+      operations:
+      - method: GET
+        name: searchmedicationrequest
+        description: Search MedicationRequest
+        call: humana-medications.searchmedicationrequest
+        with:
+          patient: rest.patient
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: humana-medications-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Humana FHIR API — Medications. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: search-medicationrequest
+      description: Search MedicationRequest
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: humana-medications.searchmedicationrequest
+      with:
+        patient: tools.patient
+      outputParameters:
+      - type: object
+        mapping: $.
