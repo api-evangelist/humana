@@ -1,0 +1,1118 @@
+"""
+Humana GraphQL Schema — conceptual schema derived from the Humana FHIR R4 developer APIs
+and CMS interoperability endpoints. Developer portal: https://developers.humana.com/
+"""
+
+# ---------------------------------------------------------------------------
+# Scalars
+# ---------------------------------------------------------------------------
+
+"""ISO 8601 date string (YYYY-MM-DD)."""
+scalar Date
+
+"""ISO 8601 datetime string."""
+scalar DateTime
+
+"""Monetary amount as a decimal string (e.g. "120.50") to avoid floating-point issues."""
+scalar Money
+
+# ---------------------------------------------------------------------------
+# Enums
+# ---------------------------------------------------------------------------
+
+enum PlanType {
+  MEDICARE_ADVANTAGE
+  MEDICARE_PDP
+  MEDICARE_SUPPLEMENT
+  COMMERCIAL
+  HUMANA_ONE
+  MEDICAID
+  GROUP
+}
+
+enum ClaimStatusCode {
+  RECEIVED
+  PENDING
+  APPROVED
+  DENIED
+  ADJUSTED
+  VOIDED
+}
+
+enum NetworkStatus {
+  IN_NETWORK
+  OUT_OF_NETWORK
+  PREFERRED
+  NON_PREFERRED
+}
+
+enum ProviderType {
+  PCP
+  SPECIALIST
+  HOSPITAL
+  URGENT_CARE
+  PHARMACY
+  LAB
+  IMAGING
+  BEHAVIORAL_HEALTH
+  TELEHEALTH
+}
+
+enum CoverageStageCode {
+  DEDUCTIBLE
+  INITIAL_COVERAGE
+  COVERAGE_GAP
+  CATASTROPHIC
+}
+
+enum FormularyTier {
+  TIER_1
+  TIER_2
+  TIER_3
+  TIER_4
+  TIER_5
+  SPECIALTY
+}
+
+enum AuthorizationStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  DENIED
+  CANCELLED
+  EXPIRED
+}
+
+enum WellnessProgramStatus {
+  ENROLLED
+  ACTIVE
+  COMPLETED
+  WITHDRAWN
+}
+
+enum WebhookEvent {
+  CLAIM_ADJUDICATED
+  PRIOR_AUTH_DECISION
+  EOB_AVAILABLE
+  PLAN_RENEWAL
+  MEMBER_UPDATED
+  PRESCRIPTION_FILLED
+}
+
+# ---------------------------------------------------------------------------
+# Member and Enrollment
+# ---------------------------------------------------------------------------
+
+"""A Humana-insured member."""
+type Member {
+  id: ID!
+  memberId: String!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: Date!
+  gender: String
+  profile: MemberProfile
+  card: MemberCard
+  enrollments: [Enrollment!]!
+  activePlan: InsurancePlan
+  claims(startDate: Date, endDate: Date, limit: Int): [Claim!]!
+  carePlan: CarePlan
+  rxHistory(months: Int): [RxHistory!]!
+  wellness: Wellness
+}
+
+"""Detailed demographic and contact profile for a member."""
+type MemberProfile {
+  id: ID!
+  memberId: String!
+  address: Address!
+  phone: String
+  email: String
+  primaryLanguage: String
+  communicationPreferences: [String!]!
+  pcpSelection: PCPSelection
+}
+
+"""Physical or digital member ID card details."""
+type MemberCard {
+  id: ID!
+  memberId: String!
+  groupNumber: String
+  rxBIN: String
+  rxPCN: String
+  rxGroup: String
+  planName: String!
+  effectiveDate: Date!
+  issueDate: Date!
+  cardImageUrl: String
+}
+
+"""A plan enrollment record linking a member to an insurance plan."""
+type Enrollment {
+  id: ID!
+  member: Member!
+  plan: InsurancePlan!
+  effectiveDate: Date!
+  terminationDate: Date
+  enrollmentType: String
+  premiumAmount: Money
+}
+
+# ---------------------------------------------------------------------------
+# Plans and Coverage
+# ---------------------------------------------------------------------------
+
+"""Top-level insurance plan offered by Humana."""
+type InsurancePlan {
+  id: ID!
+  planId: String!
+  name: String!
+  planType: PlanType!
+  description: String
+  details: PlanDetails!
+  coverage: Coverage!
+  network: [NetworkProvider!]!
+  formulary: DrugFormulary
+  premiumMonthly: Money
+  effectiveDate: Date
+  expirationDate: Date
+}
+
+"""A Medicare plan (umbrella type for MA, PDP, and Supplement)."""
+type MedicarePlan {
+  id: ID!
+  planId: String!
+  name: String!
+  planType: PlanType!
+  starRating: Float
+  contractId: String
+  pbpId: String
+  details: PlanDetails!
+  coverage: Coverage!
+  formulary: DrugFormulary
+}
+
+"""Medicare Advantage (Part C) plan combining hospital, medical, and often drug coverage."""
+type MedicareAdvantage {
+  id: ID!
+  planId: String!
+  name: String!
+  starRating: Float
+  contractId: String
+  pbpId: String
+  serviceArea: [String!]!
+  details: PlanDetails!
+  coverage: Coverage!
+  formulary: DrugFormulary
+  network: [NetworkProvider!]!
+}
+
+"""Medicare Prescription Drug Plan (standalone Part D)."""
+type MedicarePDP {
+  id: ID!
+  planId: String!
+  name: String!
+  contractId: String
+  pbpId: String
+  starRating: Float
+  details: PlanDetails!
+  formulary: DrugFormulary!
+  coverageStages: [CoverageStage!]!
+}
+
+"""PDP is an alias surface for Medicare Part D prescription drug plan data."""
+type PDP {
+  id: ID!
+  planId: String!
+  name: String!
+  formulary: DrugFormulary!
+  monthlyPremium: Money
+  annualDeductible: Money
+  coverageStages: [CoverageStage!]!
+}
+
+"""Medicare Supplement (Medigap) plan filling cost-sharing gaps in Original Medicare."""
+type MedicareSupplement {
+  id: ID!
+  planId: String!
+  name: String!
+  planLetter: String!
+  monthlyPremium: Money
+  details: PlanDetails!
+  coverage: Coverage!
+}
+
+"""Individual commercial plan (HumanaOne) for people who buy coverage directly."""
+type HumanaOne {
+  id: ID!
+  planId: String!
+  name: String!
+  metalLevel: String
+  details: PlanDetails!
+  coverage: Coverage!
+  formulary: DrugFormulary
+  network: [NetworkProvider!]!
+}
+
+"""Employer-sponsored commercial group health plan."""
+type CommercialPlan {
+  id: ID!
+  planId: String!
+  name: String!
+  employer: Employer!
+  details: PlanDetails!
+  coverage: Coverage!
+  network: [NetworkProvider!]!
+  formulary: DrugFormulary
+}
+
+"""Summary details about a plan's structure and benefits."""
+type PlanDetails {
+  id: ID!
+  planId: String!
+  inNetworkDeductible: Deductible
+  outOfNetworkDeductible: Deductible
+  inNetworkMaxOOP: MaxOOP
+  outOfNetworkMaxOOP: MaxOOP
+  primaryCareCopay: Copay
+  specialistCopay: Copay
+  emergencyRoomCopay: Copay
+  hospitalCopay: Copay
+  preventiveCare: String
+  mentalHealth: String
+  substanceUse: String
+  telehealthCopay: Copay
+}
+
+"""Coverage summary for a plan or service category."""
+type Coverage {
+  id: ID!
+  planId: String!
+  medical: Boolean!
+  dental: Boolean!
+  vision: Boolean!
+  prescription: Boolean!
+  mentalHealth: Boolean!
+  substanceUse: Boolean!
+  preventive: Boolean!
+  rehabilitation: Boolean!
+  homeHealth: Boolean!
+  skilledNursing: Boolean!
+  hospice: Boolean!
+  durableMedicalEquipment: Boolean!
+  coinsurance: Coinsurance
+}
+
+"""Annual deductible amount that a member must pay before coverage begins."""
+type Deductible {
+  individual: Money!
+  family: Money
+  remainingIndividual: Money
+  remainingFamily: Money
+  metDate: Date
+}
+
+"""Fixed dollar amount a member pays per covered service."""
+type Copay {
+  amount: Money!
+  applies: String
+}
+
+"""Percentage of costs a member pays after the deductible is met."""
+type Coinsurance {
+  memberPercent: Float!
+  planPercent: Float!
+  applies: String
+}
+
+"""Out-of-pocket maximum a member must pay in a plan year."""
+type MaxOOP {
+  individual: Money!
+  family: Money
+  metIndividual: Boolean!
+  metFamily: Boolean
+}
+
+# ---------------------------------------------------------------------------
+# Employer and Group Benefits
+# ---------------------------------------------------------------------------
+
+"""An employer that sponsors group health coverage through Humana."""
+type Employer {
+  id: ID!
+  employerId: String!
+  name: String!
+  ein: String
+  address: Address!
+  contactEmail: String
+  benefits: EmployerBenefits
+  groupPlans: [CommercialPlan!]!
+}
+
+"""The set of benefit offerings an employer provides to employees."""
+type EmployerBenefits {
+  id: ID!
+  employerId: String!
+  medicalOptions: [InsurancePlan!]!
+  dentalOptions: [HumanaDental!]!
+  visionOptions: [HumanaVision!]!
+  lifeInsuranceOptions: [HumanaLifeInsurance!]!
+  wellnessPrograms: [Wellness!]!
+  openEnrollmentStart: Date
+  openEnrollmentEnd: Date
+}
+
+# ---------------------------------------------------------------------------
+# Provider Directory
+# ---------------------------------------------------------------------------
+
+"""A directory of providers participating in a Humana network."""
+type ProviderDirectory {
+  id: ID!
+  planId: String!
+  lastUpdated: DateTime
+  providers(type: ProviderType, zipCode: String, radius: Float, limit: Int): [Provider!]!
+  hospitals(zipCode: String, radius: Float, limit: Int): [Hospital!]!
+}
+
+"""A healthcare provider (practitioner or organization) in Humana's network."""
+type Provider {
+  id: ID!
+  npi: String!
+  name: String!
+  providerType: ProviderType!
+  specialty: [String!]!
+  address: Address!
+  phone: String
+  fax: String
+  acceptingNewPatients: Boolean!
+  networkStatus: NetworkStatus!
+  languages: [String!]!
+  hospitalAffiliations: [Hospital!]!
+  locations: [ProviderLocation!]!
+}
+
+"""A network provider — a provider confirmed in-network for a specific plan."""
+type NetworkProvider {
+  id: ID!
+  provider: Provider!
+  planId: String!
+  networkStatus: NetworkStatus!
+  tierLevel: String
+  effectiveDate: Date!
+  terminationDate: Date
+}
+
+"""An in-network provider record with additional cost-sharing context."""
+type InNetworkProvider {
+  id: ID!
+  provider: Provider!
+  copay: Copay
+  coinsurance: Coinsurance
+  requiresReferral: Boolean!
+}
+
+"""A hospital or facility provider."""
+type Hospital {
+  id: ID!
+  npi: String!
+  name: String!
+  address: Address!
+  phone: String
+  facilityType: String
+  bedCount: Int
+  traumaLevel: String
+  networkStatus: NetworkStatus!
+  acceptingPatients: Boolean!
+  services: [String!]!
+}
+
+"""A Primary Care Physician participating in Humana's network."""
+type PCP {
+  id: ID!
+  npi: String!
+  name: String!
+  specialty: String!
+  address: Address!
+  phone: String
+  acceptingNewPatients: Boolean!
+  networkStatus: NetworkStatus!
+  languages: [String!]!
+  panel: String
+}
+
+"""A specialist provider in Humana's network."""
+type Specialist {
+  id: ID!
+  npi: String!
+  name: String!
+  specialty: String!
+  subSpecialty: String
+  address: Address!
+  phone: String
+  acceptingNewPatients: Boolean!
+  networkStatus: NetworkStatus!
+  requiresReferral: Boolean!
+}
+
+"""A member's PCP selection record."""
+type PCPSelection {
+  id: ID!
+  memberId: String!
+  pcp: PCP!
+  effectiveDate: Date!
+  requestDate: Date!
+  status: String!
+}
+
+"""A referral issued by a PCP to a specialist."""
+type SpecialistReferral {
+  id: ID!
+  memberId: String!
+  referringPcp: PCP!
+  specialist: Specialist!
+  issueDate: Date!
+  expirationDate: Date
+  authorizationNumber: String
+  diagnosisCode: String
+  status: String!
+}
+
+"""A physical location where a provider practices."""
+type ProviderLocation {
+  id: ID!
+  address: Address!
+  phone: String
+  hours: String
+  acceptingNewPatients: Boolean!
+}
+
+# ---------------------------------------------------------------------------
+# Care Management
+# ---------------------------------------------------------------------------
+
+"""A longitudinal care plan for a member, often tied to chronic conditions."""
+type CarePlan {
+  id: ID!
+  memberId: String!
+  goals: [String!]!
+  conditions: [String!]!
+  interventions: [String!]!
+  caseManager: CaseManager
+  startDate: Date!
+  reviewDate: Date
+  status: String!
+}
+
+"""A Humana care manager assigned to support a member's care coordination."""
+type CaseManager {
+  id: ID!
+  name: String!
+  phone: String!
+  email: String
+  specialization: String
+  assignedMembers: Int
+}
+
+"""A disease management program enrollment for a specific chronic condition."""
+type DiseaseManagement {
+  id: ID!
+  memberId: String!
+  condition: String!
+  programName: String!
+  enrollmentDate: Date!
+  status: WellnessProgramStatus!
+  caseManager: CaseManager
+  nextContactDate: Date
+}
+
+"""Chronic care management support for members with multiple chronic conditions."""
+type ChronicCare {
+  id: ID!
+  memberId: String!
+  conditions: [String!]!
+  monthlyContactMinutes: Int
+  careCoordinator: CaseManager
+  carePlan: CarePlan
+  enrollmentDate: Date!
+  status: WellnessProgramStatus!
+}
+
+# ---------------------------------------------------------------------------
+# Utilization and Encounters
+# ---------------------------------------------------------------------------
+
+"""An inpatient hospital admission for a member."""
+type HospitalAdmission {
+  id: ID!
+  memberId: String!
+  hospital: Hospital!
+  admitDate: Date!
+  dischargeDate: Date
+  diagnosisCodes: [String!]!
+  procedureCodes: [String!]!
+  attendingPhysician: Provider
+  preAuthNumber: String
+  lengthOfStay: Int
+}
+
+"""An emergency room visit record."""
+type ERVisit {
+  id: ID!
+  memberId: String!
+  hospital: Hospital!
+  visitDate: Date!
+  diagnosisCodes: [String!]!
+  copaidAmount: Money
+  claimId: String
+  disposition: String
+}
+
+"""A telehealth encounter between a member and a provider."""
+type Telehealth {
+  id: ID!
+  memberId: String!
+  provider: Provider!
+  visitDate: DateTime!
+  platform: String
+  diagnosisCodes: [String!]!
+  copaidAmount: Money
+  claimId: String
+  notes: String
+}
+
+# ---------------------------------------------------------------------------
+# Claims and Payments
+# ---------------------------------------------------------------------------
+
+"""An adjudicated claim submitted to Humana for a covered service."""
+type Claim {
+  id: ID!
+  claimNumber: String!
+  memberId: String!
+  serviceDate: Date!
+  submittedDate: Date!
+  processedDate: Date
+  provider: Provider!
+  status: ClaimStatus!
+  totalBilled: Money!
+  planPaid: Money
+  memberResponsibility: Money
+  details: ClaimDetail!
+  lines: [ClaimLine!]!
+  eob: ExplanationOfBenefits
+}
+
+"""Claim-level details including diagnosis and procedure codes."""
+type ClaimDetail {
+  id: ID!
+  claimId: String!
+  diagnosisCodes: [String!]!
+  procedureCodes: [String!]!
+  placeOfService: String
+  admitDate: Date
+  dischargeDate: Date
+  claimType: String
+}
+
+"""An individual service line within a claim."""
+type ClaimLine {
+  lineNumber: Int!
+  procedureCode: String!
+  description: String
+  serviceDate: Date!
+  billedAmount: Money!
+  allowedAmount: Money
+  planPaid: Money
+  memberResponsibility: Money
+  copay: Money
+  coinsurance: Money
+  deductibleApplied: Money
+  denial: String
+}
+
+"""Status information for a claim including adjudication outcome."""
+type ClaimStatus {
+  claimId: String!
+  statusCode: ClaimStatusCode!
+  statusDescription: String!
+  checkedDate: DateTime!
+  denialReasonCode: String
+  denialReasonDescription: String
+  appealDeadline: Date
+}
+
+"""Payment record for a processed claim."""
+type ClaimPayment {
+  id: ID!
+  claimId: String!
+  paymentDate: Date!
+  checkNumber: String
+  paymentAmount: Money!
+  paymentMethod: String
+  payeeName: String
+}
+
+"""Explanation of Benefits document summarizing claim adjudication."""
+type ExplanationOfBenefits {
+  id: ID!
+  eobNumber: String!
+  memberId: String!
+  claim: Claim!
+  serviceDate: Date!
+  processedDate: Date!
+  totalBilled: Money!
+  discounts: Money
+  planPaid: Money!
+  memberResponsibility: Money!
+  deductibleApplied: Money
+  copayApplied: Money
+  coinsuranceApplied: Money
+  oopApplied: Money
+  notes: [String!]!
+  documentUrl: String
+}
+
+# ---------------------------------------------------------------------------
+# Prior Authorization and Clinical Review
+# ---------------------------------------------------------------------------
+
+"""A prior authorization request submitted on behalf of a member."""
+type PreAuth {
+  id: ID!
+  authorizationNumber: String!
+  memberId: String!
+  requestingProvider: Provider!
+  serviceType: String!
+  diagnosisCodes: [String!]!
+  procedureCodes: [String!]!
+  requestDate: Date!
+  status: AuthorizationStatus!
+  decisionDate: Date
+  effectiveDate: Date
+  expirationDate: Date
+  approvedUnits: Int
+  denialReason: String
+  clinicalReview: ClinicalReview
+}
+
+"""A clinical review conducted by Humana's medical management team."""
+type ClinicalReview {
+  id: ID!
+  authorizationId: String!
+  reviewerName: String
+  reviewDate: Date!
+  clinicalCriteriaMet: Boolean!
+  guidelineName: String
+  decisionNotes: String
+  peerToPeerAvailable: Boolean!
+  peerToPeerDeadline: Date
+}
+
+# ---------------------------------------------------------------------------
+# Pharmacy and Formulary
+# ---------------------------------------------------------------------------
+
+"""A pharmacy location in the Humana pharmacy network."""
+type Pharmacy {
+  id: ID!
+  ncpdpId: String!
+  name: String!
+  address: Address!
+  phone: String
+  fax: String
+  hours: String
+  networkStatus: NetworkStatus!
+  mailOrder: Boolean!
+  specialty: Boolean!
+  accepts90DaySupply: Boolean!
+}
+
+"""A drug formulary listing covered medications and their tiers for a plan."""
+type DrugFormulary {
+  id: ID!
+  planId: String!
+  formularyId: String!
+  effectiveDate: Date!
+  drugs(searchTerm: String, tier: FormularyTier, limit: Int): [FormularyDrug!]!
+  tiers: [Tier!]!
+  coverageStages: [CoverageStage!]!
+}
+
+"""A drug entry in the formulary with coverage and cost information."""
+type FormularyDrug {
+  id: ID!
+  rxcui: String!
+  name: String!
+  genericName: String
+  brandName: String
+  dosageForm: String
+  strength: String
+  tier: Tier!
+  requiresPriorAuth: Boolean!
+  requiresStepTherapy: Boolean!
+  quantityLimit: String
+  coverageRestrictions: String
+}
+
+"""A coverage stage in a Medicare Part D plan (e.g., deductible, initial coverage)."""
+type CoverageStage {
+  stageCode: CoverageStageCode!
+  stageName: String!
+  memberPaysPercent: Float
+  memberPaysCopay: Money
+  planPaysPercent: Float
+  spendingThresholdStart: Money
+  spendingThresholdEnd: Money
+}
+
+"""A formulary cost-sharing tier."""
+type Tier {
+  tierNumber: Int!
+  tierName: String!
+  retailCopay30Day: Money
+  retailCopay90Day: Money
+  mailOrderCopay90Day: Money
+  coinsurancePercent: Float
+}
+
+"""A pharmacy network grouping for cost-sharing purposes."""
+type PharmacyNetwork {
+  id: ID!
+  planId: String!
+  networkName: String!
+  networkType: String
+  pharmacies(zipCode: String, radius: Float, limit: Int): [Pharmacy!]!
+  preferredPharmacies: [Pharmacy!]!
+}
+
+"""A member's prescription history record."""
+type RxHistory {
+  id: ID!
+  memberId: String!
+  drugName: String!
+  rxcui: String
+  ndc: String
+  fillDate: Date!
+  prescribingProvider: Provider
+  dispensingPharmacy: Pharmacy
+  daysSupply: Int!
+  quantityDispensed: Float!
+  memberPaid: Money
+  planPaid: Money
+}
+
+"""An active or pending prescription order."""
+type PrescriptionOrder {
+  id: ID!
+  memberId: String!
+  drugName: String!
+  rxcui: String
+  prescribingProvider: Provider!
+  pharmacy: Pharmacy
+  orderDate: Date!
+  daysSupply: Int!
+  refillsRemaining: Int!
+  status: String!
+  mailOrder: Boolean!
+}
+
+"""A mail-order pharmacy delivery record."""
+type MailOrder {
+  id: ID!
+  memberId: String!
+  prescriptionOrder: PrescriptionOrder!
+  orderDate: Date!
+  shipDate: Date
+  estimatedDelivery: Date
+  trackingNumber: String
+  status: String!
+}
+
+# ---------------------------------------------------------------------------
+# Wellness
+# ---------------------------------------------------------------------------
+
+"""A member's wellness program enrollment and engagement summary."""
+type Wellness {
+  id: ID!
+  memberId: String!
+  programs: [DiseaseManagement!]!
+  healthAssessment: HealthAssessment
+  incentivePointBalance: Int
+  rewardsEarned: Money
+  status: WellnessProgramStatus!
+}
+
+"""A completed or in-progress health risk assessment for a member."""
+type HealthAssessment {
+  id: ID!
+  memberId: String!
+  completedDate: Date
+  riskScore: Float
+  riskCategory: String
+  recommendations: [String!]!
+  nextAssessmentDue: Date
+}
+
+"""A Go365 / GoHealthyTogether wellness engagement record."""
+type GoHealthyTogether {
+  id: ID!
+  memberId: String!
+  enrollmentDate: Date!
+  activeChallenges: [String!]!
+  completedActivities: Int!
+  pointsEarned: Int!
+  tier: String
+  rewardsAvailable: Money
+}
+
+# ---------------------------------------------------------------------------
+# Ancillary Products
+# ---------------------------------------------------------------------------
+
+"""A Humana dental insurance plan or benefit."""
+type HumanaDental {
+  id: ID!
+  planId: String!
+  name: String!
+  annualMaximum: Money
+  orthodonticMaximum: Money
+  preventiveCoverage: String
+  basicCoverage: String
+  majorCoverage: String
+  orthodonticCoverage: String
+  deductible: Deductible
+  waitingPeriods: String
+}
+
+"""A Humana vision insurance plan or benefit."""
+type HumanaVision {
+  id: ID!
+  planId: String!
+  name: String!
+  examCopay: Copay
+  frameAllowance: Money
+  contactLensAllowance: Money
+  examFrequency: String
+  lensFrequency: String
+  frameFrequency: String
+}
+
+"""A Humana life insurance policy."""
+type HumanaLifeInsurance {
+  id: ID!
+  policyId: String!
+  policyType: String!
+  faceAmount: Money!
+  premiumMonthly: Money!
+  beneficiaries: [Beneficiary!]!
+  issueDate: Date!
+  expirationDate: Date
+  inForce: Boolean!
+}
+
+"""A beneficiary on a life insurance policy."""
+type Beneficiary {
+  id: ID!
+  name: String!
+  relationship: String!
+  percentageShare: Float!
+  contingent: Boolean!
+}
+
+# ---------------------------------------------------------------------------
+# Platform and Security
+# ---------------------------------------------------------------------------
+
+"""An API key credential issued through the Humana developer portal."""
+type APIKey {
+  id: ID!
+  keyId: String!
+  name: String!
+  createdDate: DateTime!
+  expirationDate: DateTime
+  scopes: [String!]!
+  active: Boolean!
+  lastUsed: DateTime
+}
+
+"""An OAuth 2.0 access or refresh token for Humana API access."""
+type Token {
+  accessToken: String!
+  tokenType: String!
+  expiresIn: Int!
+  refreshToken: String
+  scope: String!
+  issuedAt: DateTime!
+}
+
+"""A webhook subscription for Humana platform events."""
+type Webhook {
+  id: ID!
+  webhookId: String!
+  targetUrl: String!
+  events: [WebhookEvent!]!
+  active: Boolean!
+  secret: String
+  createdDate: DateTime!
+  lastTriggered: DateTime
+  failureCount: Int!
+}
+
+# ---------------------------------------------------------------------------
+# Supporting Types
+# ---------------------------------------------------------------------------
+
+"""A postal address."""
+type Address {
+  line1: String!
+  line2: String
+  city: String!
+  state: String!
+  postalCode: String!
+  county: String
+  country: String
+}
+
+# ---------------------------------------------------------------------------
+# Root Types
+# ---------------------------------------------------------------------------
+
+type Query {
+  """Look up a member by their Humana member ID."""
+  member(memberId: String!): Member
+
+  """Search for providers in the directory."""
+  providers(
+    type: ProviderType
+    specialty: String
+    zipCode: String
+    radius: Float
+    planId: String
+    acceptingNewPatients: Boolean
+    networkStatus: NetworkStatus
+    limit: Int
+    offset: Int
+  ): [Provider!]!
+
+  """Look up a specific provider by NPI."""
+  provider(npi: String!): Provider
+
+  """Get the provider directory for a specific plan."""
+  providerDirectory(planId: String!): ProviderDirectory
+
+  """Look up a specific claim."""
+  claim(claimId: String!): Claim
+
+  """List claims for a member."""
+  claims(memberId: String!, startDate: Date, endDate: Date, status: ClaimStatusCode, limit: Int, offset: Int): [Claim!]!
+
+  """Get an Explanation of Benefits document."""
+  explanationOfBenefits(eobId: String!): ExplanationOfBenefits
+
+  """Get all EOBs for a member."""
+  memberEOBs(memberId: String!, startDate: Date, endDate: Date, limit: Int): [ExplanationOfBenefits!]!
+
+  """Look up an insurance plan by plan ID."""
+  insurancePlan(planId: String!): InsurancePlan
+
+  """Search for Medicare plans by county and plan type."""
+  medicarePlans(county: String!, state: String!, planType: PlanType): [MedicarePlan!]!
+
+  """Get the drug formulary for a plan."""
+  formulary(planId: String!): DrugFormulary
+
+  """Search for a drug in the formulary."""
+  formularyDrug(planId: String!, rxcui: String!): FormularyDrug
+
+  """Search for pharmacies."""
+  pharmacies(zipCode: String!, radius: Float, planId: String, mailOrder: Boolean, limit: Int): [Pharmacy!]!
+
+  """Get a prior authorization by authorization number."""
+  preAuth(authorizationNumber: String!): PreAuth
+
+  """List prior authorizations for a member."""
+  memberPreAuths(memberId: String!, status: AuthorizationStatus, limit: Int): [PreAuth!]!
+
+  """Get an employer record."""
+  employer(employerId: String!): Employer
+
+  """Get wellness information for a member."""
+  memberWellness(memberId: String!): Wellness
+
+  """List API keys for the authenticated application."""
+  apiKeys: [APIKey!]!
+
+  """List active webhook subscriptions."""
+  webhooks: [Webhook!]!
+}
+
+"""Input for selecting a new PCP."""
+input PCPSelectionInput {
+  memberId: String!
+  pcpNpi: String!
+  effectiveDate: Date!
+  reason: String
+}
+
+"""Input for submitting a prior authorization request."""
+input PreAuthInput {
+  memberId: String!
+  requestingProviderNpi: String!
+  serviceType: String!
+  diagnosisCodes: [String!]!
+  procedureCodes: [String!]!
+  urgency: String
+  clinicalNotes: String
+}
+
+"""Input for placing a prescription order."""
+input PrescriptionOrderInput {
+  memberId: String!
+  rxcui: String!
+  prescribingProviderNpi: String!
+  ncpdpId: String
+  daysSupply: Int!
+  mailOrder: Boolean!
+}
+
+"""Input for creating or updating a webhook."""
+input WebhookInput {
+  targetUrl: String!
+  events: [WebhookEvent!]!
+  active: Boolean!
+  secret: String
+}
+
+"""Input for enrolling in a wellness program."""
+input WellnessEnrollmentInput {
+  memberId: String!
+  programName: String!
+}
+
+type Mutation {
+  """Select or change a member's PCP."""
+  selectPCP(input: PCPSelectionInput!): PCPSelection
+
+  """Submit a prior authorization request."""
+  submitPreAuth(input: PreAuthInput!): PreAuth
+
+  """Place a prescription order."""
+  orderPrescription(input: PrescriptionOrderInput!): PrescriptionOrder
+
+  """Create a new webhook subscription."""
+  createWebhook(input: WebhookInput!): Webhook
+
+  """Update an existing webhook subscription."""
+  updateWebhook(webhookId: String!, input: WebhookInput!): Webhook
+
+  """Delete a webhook subscription."""
+  deleteWebhook(webhookId: String!): Boolean
+
+  """Enroll a member in a wellness program."""
+  enrollWellness(input: WellnessEnrollmentInput!): Wellness
+
+  """Revoke an API key."""
+  revokeAPIKey(keyId: String!): Boolean
+}
