@@ -1,0 +1,262 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Humana FHIR API",
+    "version": "R4"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Clinical",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search AllergyIntolerance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/AllergyIntolerance",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search AllergyIntolerance"
+        },
+        {
+          "info": {
+            "name": "Search CarePlan",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/CarePlan",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search CarePlan"
+        },
+        {
+          "info": {
+            "name": "Search CareTeam",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/CareTeam",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search CareTeam"
+        },
+        {
+          "info": {
+            "name": "Search Condition",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Condition",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Condition"
+        },
+        {
+          "info": {
+            "name": "Search Goal",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Goal",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Goal"
+        },
+        {
+          "info": {
+            "name": "Search Immunization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Immunization",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Immunization"
+        },
+        {
+          "info": {
+            "name": "Search Observation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Observation",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Observation"
+        },
+        {
+          "info": {
+            "name": "Search Procedure",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Procedure",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Procedure"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Coverage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search Coverage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Coverage",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Coverage"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Medications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search MedicationRequest",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/MedicationRequest",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search MedicationRequest"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Demographic",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Patient",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Patient/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get Patient"
+        },
+        {
+          "info": {
+            "name": "Search Practitioner",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Practitioner"
+          },
+          "docs": "Search Practitioner"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
