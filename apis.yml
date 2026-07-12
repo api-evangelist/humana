@@ -97,6 +97,10 @@ apis:
   - type: Sandbox
     url: https://sandbox-fhir.humana.com/api/
 common:
+- type: DomainSecurity
+  url: security/humana-domain-security.yml
+- type: Authentication
+  url: authentication/humana-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/humana
 - type: LinkedIn
