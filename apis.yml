@@ -97,6 +97,8 @@ apis:
   - type: Sandbox
     url: https://sandbox-fhir.humana.com/api/
 common:
+- type: AgenticAccess
+  url: agentic-access/humana-agentic-access.yml
 - type: DomainSecurity
   url: security/humana-domain-security.yml
 - type: Authentication
