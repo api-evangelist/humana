@@ -7,7 +7,20 @@ description: Humana is a U.S. health insurance company that provides Medicare, M
   and provider directories under CMS interoperability rules.
 url: https://raw.githubusercontent.com/api-evangelist/humana/refs/heads/main/apis.yml
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/humana.png
 tags:
 - FHIR
 - Health Insurance
@@ -19,35 +32,11 @@ created: '2025-01-07'
 modified: '2026-05-19'
 specificationVersion: '0.19'
 apis:
-- aid: humana:humana-fhir-clinical-api
-  name: Humana FHIR Clinical Data API
-  description: FHIR R4-compliant API surface providing clinical resources for member
-    health data, including AllergyIntolerance, CarePlan, CareTeam, Condition, Goal,
-    Immunization, Observation, and Procedure resources.
-  humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
-  baseURL: https://fhir.humana.com/api
-  tags:
-  - Clinical Data
-  - FHIR
-  - Healthcare
-  properties:
-  - type: Documentation
-    url: https://developers.humana.com/apis/allergyintolerance-api/doc
-  - type: CapabilityStatement
-    url: https://fhir.humana.com/api/metadata
-  - type: Sandbox
-    url: https://sandbox-fhir.humana.com/api/
-  - type: GettingStarted
-    url: https://developers.humana.com/
-  - type: OpenAPI
-    url: openapi/humana-openapi.yml
-  - url: graphql/humana-graphql.md
-    type: GraphQL
 - aid: humana:humana-fhir-medication-api
   name: Humana FHIR Medication API
-  description: FHIR R4-compliant API surface for medication-related resources including
-    Medication, MedicationKnowledge, MedicationRequest, drug formulary List resources,
-    and supporting payer data.
+  description: >-
+    FHIR R4-compliant API surface for medication-related resources including Medication, MedicationKnowledge,
+    MedicationRequest, drug formulary List resources, and supporting payer data.
   humanURL: https://developers.humana.com/
   baseURL: https://fhir.humana.com/api
   tags:
@@ -63,9 +52,9 @@ apis:
     url: https://sandbox-fhir.humana.com/api/
 - aid: humana:humana-fhir-coverage-api
   name: Humana FHIR Coverage and Benefits API
-  description: FHIR R4-compliant API surface for insurance coverage data, including
-    Coverage, ExplanationOfBenefits, and InsurancePlan resources used to satisfy CMS
-    Patient Access and Provider Directory rules.
+  description: >-
+    FHIR R4-compliant API surface for insurance coverage data, including Coverage, ExplanationOfBenefits,
+    and InsurancePlan resources used to satisfy CMS Patient Access and Provider Directory rules.
   humanURL: https://developers.humana.com/
   baseURL: https://fhir.humana.com/api
   tags:
@@ -81,9 +70,9 @@ apis:
     url: https://sandbox-fhir.humana.com/api/
 - aid: humana:humana-fhir-provider-directory-api
   name: Humana FHIR Provider Directory API
-  description: FHIR R4-compliant API surface for provider directory information, including
-    Patient, Practitioner, PractitionerRole, Organization, Location, and DocumentReference
-    resources.
+  description: >-
+    FHIR R4-compliant API surface for provider directory information, including Patient, Practitioner,
+    PractitionerRole, Organization, Location, and DocumentReference resources.
   humanURL: https://developers.humana.com/
   baseURL: https://fhir.humana.com/api
   tags:
@@ -96,6 +85,86 @@ apis:
     url: https://fhir.humana.com/api/metadata
   - type: Sandbox
     url: https://sandbox-fhir.humana.com/api/
+- aid: humana:humana-clinical-api
+  name: Humana Clinical API
+  description: Clinical FHIR resources
+  humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
+  baseURL: https://fhir.humana.com/api
+  tags:
+  - Clinical
+  properties:
+  - type: OpenAPI
+    url: openapi/humana-clinical-api-openapi.yml
+  - type: Documentation
+    url: https://developers.humana.com/apis/allergyintolerance-api/doc
+  - type: CapabilityStatement
+    url: https://fhir.humana.com/api/metadata
+  - type: Sandbox
+    url: https://sandbox-fhir.humana.com/api/
+  - type: GettingStarted
+    url: https://developers.humana.com/
+  - type: GraphQL
+    url: graphql/humana-graphql.md
+- aid: humana:humana-coverage-api
+  name: Humana Coverage API
+  description: Coverage and insurance FHIR resources
+  humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
+  baseURL: https://fhir.humana.com/api
+  tags:
+  - Coverage
+  properties:
+  - type: OpenAPI
+    url: openapi/humana-coverage-api-openapi.yml
+  - type: Documentation
+    url: https://developers.humana.com/apis/allergyintolerance-api/doc
+  - type: CapabilityStatement
+    url: https://fhir.humana.com/api/metadata
+  - type: Sandbox
+    url: https://sandbox-fhir.humana.com/api/
+  - type: GettingStarted
+    url: https://developers.humana.com/
+  - type: GraphQL
+    url: graphql/humana-graphql.md
+- aid: humana:humana-demographic-api
+  name: Humana Demographic API
+  description: Patient and provider demographic FHIR resources
+  humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
+  baseURL: https://fhir.humana.com/api
+  tags:
+  - Demographic
+  properties:
+  - type: OpenAPI
+    url: openapi/humana-demographic-api-openapi.yml
+  - type: Documentation
+    url: https://developers.humana.com/apis/allergyintolerance-api/doc
+  - type: CapabilityStatement
+    url: https://fhir.humana.com/api/metadata
+  - type: Sandbox
+    url: https://sandbox-fhir.humana.com/api/
+  - type: GettingStarted
+    url: https://developers.humana.com/
+  - type: GraphQL
+    url: graphql/humana-graphql.md
+- aid: humana:humana-medications-api
+  name: Humana Medications API
+  description: Medication FHIR resources
+  humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
+  baseURL: https://fhir.humana.com/api
+  tags:
+  - Medications
+  properties:
+  - type: OpenAPI
+    url: openapi/humana-medications-api-openapi.yml
+  - type: Documentation
+    url: https://developers.humana.com/apis/allergyintolerance-api/doc
+  - type: CapabilityStatement
+    url: https://fhir.humana.com/api/metadata
+  - type: Sandbox
+    url: https://sandbox-fhir.humana.com/api/
+  - type: GettingStarted
+    url: https://developers.humana.com/
+  - type: GraphQL
+    url: graphql/humana-graphql.md
 common:
 - type: AgenticAccess
   url: agentic-access/humana-agentic-access.yml
