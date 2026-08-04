@@ -1,0 +1,20 @@
+{
+  "provider": "humana",
+  "sources": [
+    "humana-clinical-api-openapi.yml",
+    "humana-coverage-api-openapi.yml",
+    "humana-demographic-api-openapi.yml",
+    "humana-medications-api-openapi.yml"
+  ],
+  "outputs": [
+    "humana-clinical-api-openapi.yml",
+    "humana-coverage-api-openapi.yml",
+    "humana-demographic-api-openapi.yml",
+    "humana-medications-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
