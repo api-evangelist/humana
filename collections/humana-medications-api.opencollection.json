@@ -1,0 +1,42 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Humana FHIR Clinical Medications API",
+    "version": "R4"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Medications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search MedicationRequest",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/MedicationRequest",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search MedicationRequest"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

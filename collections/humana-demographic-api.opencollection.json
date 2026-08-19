@@ -1,0 +1,53 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Humana FHIR Clinical Demographic API",
+    "version": "R4"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Demographic",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Patient",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Patient/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get Patient"
+        },
+        {
+          "info": {
+            "name": "Search Practitioner",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Practitioner"
+          },
+          "docs": "Search Practitioner"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

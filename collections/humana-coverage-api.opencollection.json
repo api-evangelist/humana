@@ -1,0 +1,42 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Humana FHIR Clinical Coverage API",
+    "version": "R4"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Coverage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search Coverage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://fhir.humana.com/api/Coverage",
+            "params": [
+              {
+                "name": "patient",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Search Coverage"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

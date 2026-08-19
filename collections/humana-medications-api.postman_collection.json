@@ -1,0 +1,128 @@
+{
+  "item": [
+    {
+      "id": "cf988db3-6406-4706-84c1-f0362382beeb",
+      "name": "Medications",
+      "description": {
+        "content": "Medication FHIR resources",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "66d31bd7-90cd-4cc7-a3f0-6a697b0d689b",
+          "name": "Search MedicationRequest",
+          "request": {
+            "name": "Search MedicationRequest",
+            "description": {},
+            "url": {
+              "path": [
+                "MedicationRequest"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "patient",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "438e6067-0fe8-4db6-9438-4687755bd383",
+              "name": "FHIR Bundle",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "MedicationRequest"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "patient",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"resourceType\": \"string\",\n  \"type\": \"string\",\n  \"total\": 1241\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://fhir.humana.com/api",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c5fe6271-1e8a-45f1-9c35-56af35318e52",
+    "name": "Humana FHIR Clinical Medications API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Minimal OpenAPI description for Humana's FHIR R4 / US Core STU3 patient access APIs covering common clinical, medication, and coverage resources. Each endpoint returns a FHIR Bundle (searchset) of the named resource type. Generated from public documentation; verify before production use.\n\nContact Support:\n Name: Humana Developer Portal",
+      "type": "text/plain"
+    }
+  }
+}
