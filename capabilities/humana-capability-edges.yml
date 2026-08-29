@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 2
+edge_count: 1
 edges:
 - tag: Clinical
   spec_file: humana-clinical-api-openapi.yml
@@ -19,18 +19,9 @@ edges:
   capability_id_l1: BC-2900
   capability_name: Healthcare Interoperability Operations
   confidence: 0.75
-  evidence: '"FHIR R4 / US Core STU3 patient access APIs"; GET /Condition searchCondition, GET /Immunization
-    searchImmunization, GET /CarePlan searchCarePlan — "Each endpoint returns a FHIR Bundle (searchset)"'
-  reason: Read-only FHIR search endpoints exposing clinical resources under CMS patient-access rules.
-    That is operation of FHIR endpoints and patient-initiated data sharing (interoperability operations),
+  evidence: '"Humana''s FHIR R4 / US Core STU3 patient access APIs"; GET /Condition searchCondition, GET
+    /CarePlan searchCarePlan, GET /Observation searchObservation; "Each endpoint returns a FHIR Bundle
+    (searchset)"'
+  reason: Read-only FHIR R4 patient-access endpoints exposing clinical resources under CMS interoperability
+    rules. The realised capability is operation of FHIR endpoints for patient-initiated data sharing,
     not the delivery or documentation of care itself.
-- tag: Demographic
-  spec_file: humana-demographic-api-openapi.yml
-  capability_id: BC-2900.60
-  capability_id_l1: BC-2900
-  capability_name: Healthcare Interoperability Operations
-  confidence: 0.7
-  evidence: GET /Patient/{id} getPatient; GET /Practitioner searchPractitioner — "FHIR R4 / US Core STU3
-    patient access APIs"
-  reason: Read access to FHIR Patient and Practitioner resources via a patient-access API. This is provision
-    of FHIR endpoints / directory data exchange, not registration or credentialing workflows.
