@@ -178,6 +178,9 @@ apis:
   - type: GraphQL
     url: graphql/humana-graphql.md
 common:
+- type: CapabilityMap
+  url: capabilities/humana-capability-edges.yml
+  name: Humana Business Capability Map
 - type: AgenticAccess
   url: agentic-access/humana-agentic-access.yml
 - type: DomainSecurity
