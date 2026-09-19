@@ -55,6 +55,10 @@ apis:
   tags:
   - FHIR
   - Formulary
+  - Medication
+  tags_raw:
+  - FHIR
+  - Formulary
   - Medications
   properties:
   - type: Documentation
@@ -164,6 +168,8 @@ apis:
   humanURL: https://developers.humana.com/apis/allergyintolerance-api/doc
   baseURL: https://fhir.humana.com/api
   tags:
+  - Medication
+  tags_raw:
   - Medications
   properties:
   - type: OpenAPI
