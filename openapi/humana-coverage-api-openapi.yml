@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Humana FHIR Clinical Coverage API
+  title: Humana FHIR Coverage API
   description: Minimal OpenAPI description for Humana's FHIR R4 / US Core STU3 patient access APIs covering common clinical, medication, and coverage resources. Each endpoint returns a FHIR Bundle (searchset) of the named resource type. Generated from public documentation; verify before production use.
   version: R4
   contact:

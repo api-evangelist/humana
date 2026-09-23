@@ -1,7 +1,9 @@
 ---
 title: October 9, 2025 VIA EMAIL Mr. Jim Rechtin President and ...
 url: https://www.hsgac.senate.gov/wp-content/uploads/2025-10-09-Letter-from-Ranking-Member-Blumenthal-to-Humana.pdf
-date: '2026-05-25'
+published: '2025-10-09'
+date_basis: url-derived
+harvested: '2026-05-25'
 query: '"Humana" press release artificial intelligence'
 position: 5
 source: serpapi-google

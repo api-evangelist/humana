@@ -1,10 +1,7 @@
 {
   "provider": "humana",
   "sources": [
-    "humana-clinical-api-openapi.yml",
-    "humana-coverage-api-openapi.yml",
-    "humana-demographic-api-openapi.yml",
-    "humana-medications-api-openapi.yml"
+    "_ae-authored/humana-openapi.yml"
   ],
   "outputs": [
     "humana-clinical-api-openapi.yml",
@@ -15,6 +12,15 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "humana-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "humana-clinical-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "humana-coverage-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "humana-demographic-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "humana-medications-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

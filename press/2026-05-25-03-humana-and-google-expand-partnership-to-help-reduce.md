@@ -1,7 +1,9 @@
 ---
 title: Humana and Google Expand Partnership to Help Reduce ...
 url: https://www.googlecloudpresscorner.com/2024-07-25-Humana-and-Google-Expand-Partnership-to-Help-Reduce-Cost-of-Care-and-Improve-Member-Experiences
-date: '2026-05-25'
+published: '2024-07-25'
+date_basis: url-derived
+harvested: '2026-05-25'
 query: '"Humana" press release artificial intelligence'
 position: 3
 source: serpapi-google
