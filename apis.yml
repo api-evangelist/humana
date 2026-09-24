@@ -120,8 +120,6 @@ apis:
     url: https://sandbox-fhir.humana.com/api/
   - type: GettingStarted
     url: https://developers.humana.com/
-  - type: GraphQL
-    url: graphql/humana-graphql.md
 - aid: humana:humana-coverage-api
   name: Humana Coverage API
   description: Coverage and insurance FHIR resources
@@ -140,8 +138,6 @@ apis:
     url: https://sandbox-fhir.humana.com/api/
   - type: GettingStarted
     url: https://developers.humana.com/
-  - type: GraphQL
-    url: graphql/humana-graphql.md
 - aid: humana:humana-demographic-api
   name: Humana Demographic API
   description: Patient and provider demographic FHIR resources
@@ -160,8 +156,6 @@ apis:
     url: https://sandbox-fhir.humana.com/api/
   - type: GettingStarted
     url: https://developers.humana.com/
-  - type: GraphQL
-    url: graphql/humana-graphql.md
 - aid: humana:humana-medications-api
   name: Humana Medications API
   description: Medication FHIR resources
@@ -182,8 +176,6 @@ apis:
     url: https://sandbox-fhir.humana.com/api/
   - type: GettingStarted
     url: https://developers.humana.com/
-  - type: GraphQL
-    url: graphql/humana-graphql.md
 common:
 - type: CapabilityMap
   url: capabilities/humana-capability-edges.yml
