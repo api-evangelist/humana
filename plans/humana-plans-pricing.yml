@@ -116,3 +116,43 @@ plans:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - subscription
+  units:
+  - request
+  plans:
+  - name: Developer Sandbox
+    access: freemium
+    model: subscription
+    model_how: derived
+    units:
+    - request
+    periods:
+    - per-use
+  - name: CMS Patient Access (Production)
+    access: freemium
+    model: subscription
+    model_how: derived
+    units:
+    - request
+    periods:
+    - per-use
+  - name: Provider Directory (Public)
+    access: freemium
+    model: subscription
+    model_how: derived
+    units:
+    - request
+    periods:
+    - per-use
+  - name: Drug Formulary (Public)
+    access: freemium
+    model: subscription
+    model_how: derived
+    units:
+    - request
+    periods:
+    - per-use
